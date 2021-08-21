@@ -36,8 +36,6 @@ export default class VerticalTabs extends Component {
     ]
   }
 
-  
-
   // componentDidMount(){
   //   axios.get("/list.json")
   //     .then(responce=>{
@@ -47,6 +45,8 @@ export default class VerticalTabs extends Component {
   //     })
   //     .catch(error=>console.log(error))
   // }
+
+
   Styles = () => makeStyles((theme) => ({
     root: {
       flexGrow: 1,

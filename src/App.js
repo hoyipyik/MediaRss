@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { Grid } from '@material-ui/core'
+import { Grid, Snackbar } from '@material-ui/core'
 
 import Aux from './hoc/Aux'
 import Navigation from './Components/Navigation/Navigation'
 import ChannelList from './Components/ChannelList/ChannelList'
+import ChannelItem from './Components/ChannelItem/ChannelItem'
 import Add from './Components/Add/Add'
-import Info from './Components/Info/Info'
+// import Info from './Components/Info/Info'
 import axios from './axios'
 // import axios from 'axios'
 
@@ -16,14 +17,18 @@ export class App extends Component {
     showList: false,
     showHome: true,
     showInfo: false,
-    inputHolder: ""
+    channelFlag: false,
+    inputHolder: "",
+    snackbarOpen: false,
+    channelMsg: ''
   }
 
   showListHandler = () =>{
     this.setState({
       showList: true,
       // showHome: false
-      showInfo: false
+      showInfo: false,
+      channelFlag: false
     })
   }
 
@@ -31,7 +36,8 @@ export class App extends Component {
     this.setState({
       showList: false,
       showHome: true,
-      showInfo: false
+      showInfo: false,
+      channelFlag: false
     })
   }
 
@@ -51,21 +57,54 @@ export class App extends Component {
 
   submitHandler = () =>{
     const link = [this.state.inputHolder]
-    axios.post("/link.json", link)
+    console.log(link)
+    if(link[0]!==""){
+      axios.get(link)
       .then(responce=>{
-        console.log(responce)
-        this.setState({
-          inputHolder: ""
-        })
+        if(responce.status===200){
+          axios.post("/link.json", link)
+            .then(responce=>{
+            console.log(responce)
+        
+          })
+            .catch(error=>{
+            console.log(error.request)
+          })
+        }
+          
       })
       .catch(error=>{
-        console.log(error.request)
+        console.log(error)
+        this.setState({
+          snackbarOpen: true
+        })
       })
+    }
+    this.setState({
+      inputHolder: ""
+    })
     
   }
 
+  handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({
+      snackbarOpen: false
+    })
+    
+  };
+
+  channelItemMsg = (msg) =>{
+    this.setState({
+      channelMsg: msg,
+      channelFlag: true
+    })
+  }
+
   render() {
-    const {showList, showHome, showInfo} = this.state
+    const {showList, showHome, showInfo, channelFlag} = this.state
     return (
       <Aux>
         <Navigation 
@@ -75,20 +114,40 @@ export class App extends Component {
         />
         <Grid container spacing={3}>
           <Grid item xs={2}>
-            {showList?<ChannelList/>:null}
+            {showList?
+              <ChannelList
+                channelItemMsg={this.channelItemMsg}
+              />:null}
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={10}>
+            {channelFlag?
+            <ChannelItem
+              channelMsg={this.state.channelMsg}
+            />
+            :<div>
             {showHome?
               <Add 
               inputHolder={this.state.inputHolder}
               inputHandler={this.inputHandler}
               submitHandler={this.submitHandler}
               />:null}
+              </div>
+            }
           </Grid>
-          <Grid item xs={2}>
+          {/* <Grid item xs={2}>
             {showInfo?<Info/>:null}
-          </Grid>
+          </Grid> */}
         </Grid>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={this.state.snackbarOpen}
+          autoHideDuration={2000}
+          onClose={this.handleClose}
+          message="Invalid Channel Link"
+        />
       </Aux>
     )
   }

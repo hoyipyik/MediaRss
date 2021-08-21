@@ -4,7 +4,7 @@ import {Button, Input} from '@material-ui/core/'
 const add = (props) => {
 
     return (
-        <div> 
+        <div style={{marginRight: "10%"}}> 
             {/* <h1>Media RSS</h1> */}
             <h2>Paste the Link of Channel's Homepage to Subscribe</h2>
             <Input 

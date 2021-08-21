@@ -25,18 +25,33 @@ export class ChannelItem extends Component {
         currenttitle: ''
     }
     
-    // componentDidMount(){
-    //     axios.get(this.props.channelMsg)
-    //         .then(res=>{
-    //             console.log(res)
-    //             this.setState({
-    //                 data: res,
-    //                 title: res.title,
-    //                 links: res.links
-    //             })
-    //         })
-    //         .catch(error=>console.log(error))
-    // }
+    componentDidMount(){
+        axios.get("/channels"+this.props.channelMsg+".json")
+            .then(res=>{
+                console.log("[Items: ] GET", res)
+                this.setState({
+                    data: {...res.data},
+                    title: res.data.title,
+                    links: [...res.data.links]
+                })
+            })
+            .catch(error=>console.log(error))
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.channelMsg !== this.props.channelMsg){
+            axios.get("/channels"+this.props.channelMsg+".json")
+            .then(res=>{
+                console.log("[Items: ] GET", res)
+                this.setState({
+                    data: {...res.data},
+                    title: res.data.title,
+                    links: [...res.data.links]
+                })
+            })
+            .catch(error=>console.log(error))
+        }
+    }
 
     Styles = () => makeStyles((theme) => ({
         root: {
@@ -58,8 +73,8 @@ export class ChannelItem extends Component {
     handleClickOpen = (title, link) =>{
         this.setState({
             open: true,
-            currentlink: title,
-            currenttitle: link
+            currentlink: link,
+            currenttitle: title
         })
     }
       
@@ -78,7 +93,7 @@ export class ChannelItem extends Component {
             <div className={classes.root}>
               <ImageList rowHeight={180} className={classes.imageList}>
                 <ImageListItem key="Subheader" cols={2} style={{ height: 'auto' }}>
-                  <ListSubheader component="div">{this.props.channelMsg}</ListSubheader>
+                  <ListSubheader component="div">{this.props.channelMsg, title}</ListSubheader>
                 </ImageListItem>
                 {links.map((item) => (
                   <ImageListItem key={item.videolink}>
@@ -101,17 +116,18 @@ export class ChannelItem extends Component {
               </ImageList>
 
               <Dialog
+                style={{marginLeft:0, marginTop:0, marginRight:0, marginBottom:0}}
                 open={this.state.open}
                 onClose={this.handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
                 >
-                <DialogTitle id="alert-dialog-title">{this.state.currenttitle}</DialogTitle>
-                <DialogContent>
+                {/* <DialogTitle id="alert-dialog-title">{this.state.currenttitle}</DialogTitle> */}
+                <DialogContent style={{marginLeft:"-2.5%", marginTop:0, marginRight:0, marginBottom:0}}>
                     <DialogContentText id="alert-dialog-description">
                     <iframe 
-                        width="100%" 
-                        height="100%" 
+                        width="580" 
+                        height="337" 
                         src={this.state.currentlink} 
                         title="YouTube video player" 
                         frameborder="0" 
@@ -122,12 +138,12 @@ export class ChannelItem extends Component {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.handleClose} color="primary">
+                    {/* <Button onClick={this.handleClose} color="primary">
                         Discord
-                    </Button>
+                    </Button>  */}
                     {/* <Button onClick={handleClose} color="primary" autoFocus>
                         Agree
-                    </Button> */}
+                </Button>*/}
                 </DialogActions>
             </Dialog>
             </div>

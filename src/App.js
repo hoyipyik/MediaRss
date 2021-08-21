@@ -104,7 +104,7 @@ export class App extends Component {
   }
 
   render() {
-    const {showList, showHome, showInfo, channelFlag} = this.state
+    const {showList, showHome,  channelFlag} = this.state
     return (
       <Aux>
         <Navigation 
@@ -119,7 +119,7 @@ export class App extends Component {
                 channelItemMsg={this.channelItemMsg}
               />:null}
           </Grid>
-          <Grid item xs={10}>
+          <Grid item xs={9} >
             {channelFlag?
             <ChannelItem
               channelMsg={this.state.channelMsg}

@@ -11,40 +11,19 @@ import axios from '../../axios'
 export default class VerticalTabs extends Component {
   state = {
     value: 0,
-    channelList:[
-      {
-        id: '0',
-        title: "1",
-        icon: "",
-        getmsg: '/1'
-      },
-
-      {
-        id: '1',
-        title: "2",
-        icon: "",
-        getmsg: '/2'
-      },
-
-
-      {
-        id: '2',
-        title: "3",
-        icon: "",
-        getmsg: '/3'
-      }
-    ]
+    channelList:[]
   }
 
-  // componentDidMount(){
-  //   axios.get("/list.json")
-  //     .then(responce=>{
-  //       this.setState({
-  //         channelList: responce
-  //       })
-  //     })
-  //     .catch(error=>console.log(error))
-  // }
+  componentDidMount(){
+    axios.get("/list.json")
+      .then(responce=>{
+        console.log("[ChannelList: GET]", responce)
+        this.setState({
+          channelList: [...responce.data]
+        })
+      })
+      .catch(error=>console.log(error))
+  }
 
 
   Styles = () => makeStyles((theme) => ({

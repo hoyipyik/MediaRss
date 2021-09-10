@@ -39,6 +39,7 @@ export class ChannelItem extends Component {
     }
 
     componentDidUpdate(prevProps, prevState){
+      
         if(prevProps.channelMsg !== this.props.channelMsg){
             axios.get("/channels"+this.props.channelMsg+".json")
             .then(res=>{
